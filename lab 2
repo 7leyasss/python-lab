@@ -1,0 +1,7 @@
+#уровень 2_8а
+a = 10.0
+d = a
+for i in range (2, 8):
+    d = d * 1.1
+    a = a + d
+    print(a)
