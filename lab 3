@@ -1,0 +1,20 @@
+#уровень 3_1
+
+from math import factorial
+from math import cos
+
+#
+a = 0.1
+b = 1
+i = 0
+s = 0
+while abs(a) > 0.0001:
+    x=0.1
+    i=1
+    while x<1 :
+        a = ((-1)**i)*((x**(2*i))/(factorial(2*i)))
+        s = s + a
+        x += 0.1
+        b = b + cos(x)
+        i += 1
+        print(s,b)
