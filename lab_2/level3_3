@@ -1,0 +1,20 @@
+import random
+
+group = [0] * 100
+n = 0
+glass = 0  # стакан считаем 200 мл
+
+glass = 0
+n = int(input('введите кол-во учеников: '))
+
+print(f'пусть {n} учеников 1 класса имеют вес: ')
+random.seed()
+for i in range(n):
+    group[i] = 35 - random.randint(0, 7)
+    print(f'{group[i]:3}', end=' ')
+    if group[i] < 30:
+        glass += 1
+print()
+print(f'потребуется {glass / 5:6.3f} литров молока')
+input()
+
