@@ -1,0 +1,25 @@
+ 
+# Ввод количества учеников
+n = int(input("Введите количество учеников: "))
+
+# Инициализация счетчиков и сумм роста мальчиков и девочек
+boys_count, girls_count, boys_sum, girls_sum = 0, 0, 0, 0
+
+# Цикл для ввода роста каждого ученика
+for _ in range(n):
+    height = int(input("Введите рост ученика: "))
+    if height >= 0:
+        girls_count += 1
+        girls_sum += height
+    else:
+        boys_count += 1
+        boys_sum += height
+
+# Расчет средних значений роста
+girls_avg_height = girls_sum / girls_count
+boys_avg_height = boys_sum / boys_count
+
+# Вывод результатов
+print("Средний рост девочек:", girls_avg_height)
+print("Средний рост мальчиков:", boys_avg_height)
+ 
