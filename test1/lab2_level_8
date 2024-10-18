@@ -29,4 +29,40 @@ for i, (x, y) in enumerate(points):
 # Вывод результатов
 print("Номер ближайшей точки:", closest_point_index)
 print("Расстояние до начала координат:", closest_distance)
+
+
+
+
+
  
+import random
+import math
+
+# Функция для вычисления расстояния между двумя точками
+def distance(x1, y1, x2, y2):
+ return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
+# Генерация случайных координат точек
+n = int(input("Введите количество точек: "))
+points = []
+for _ in range(n):
+ x = random.randint(-100, 100)
+ y = random.randint(-100, 100)
+ points.append((x, y))
+
+# Инициализация переменных для хранения номера ближайшей точки и расстояния
+closest_point_index = 0
+closest_distance = float('inf')
+
+# Поиск ближайшей точки
+for i, (x, y) in enumerate(points):
+ distance_to_origin = distance(0, 0, x, y)
+ if distance_to_origin < closest_distance:
+ closest_point_index = i + 1 # Индексация начинается с 1
+ closest_distance = distance_to_origin
+
+# Вывод результатов
+print("Номер ближайшей точки:", closest_point_index)
+print("Расстояние до начала координат:", closest_distance)
+ 
+
