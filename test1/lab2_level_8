@@ -1,56 +1,19 @@
-''' В компьютер вводятся координаты точек, лежащих на плоскости. Напечатать номер точки, ближайшей к началу координат, и вели-
-чину расстояния от нее до начала координат.'''
-import math
+''' В компьютер вводятся координаты точек, лежащих на плоскости. Напечатать номер точки, ближайшей к началу координат, и вели-
+чину расстояния от нее до начала координат.''
 
-# Функция для вычисления расстояния между двумя точками
-def distance(x1, y1, x2, y2):
-    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-
-# Ввод координат точек
-points = []
-while True:
-    try:
-        x, y = map(float, input("Введите координаты точки (x, y): ").split())
-        points.append((x, y))
-    except ValueError:
-        break
-
-# Инициализация переменных для хранения номера ближайшей точки и расстояния
-closest_point_index = 0
-closest_distance = float('inf')
-
-# Поиск ближайшей точки
-for i, (x, y) in enumerate(points):
-    distance_to_origin = distance(0, 0, x, y)
-    if distance_to_origin < closest_distance:
-        closest_point_index = i + 1  # Индексация начинается с 1
-        closest_distance = distance_to_origin
-
-# Вывод результатов
-print("Номер ближайшей точки:", closest_point_index)
-print("Расстояние до начала координат:", closest_distance)
-
-
-
-
-
- 
-import random
 import math
 
 # Функция для вычисления расстояния между двумя точками
 def distance(x1, y1, x2, y2):
  return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
-# Генерация случайных координат точек
 n = int(input("Введите количество точек: "))
 points = []
 for _ in range(n):
- x = random.randint(-100, 100)
- y = random.randint(-100, 100)
+ x = float(input("Введите значение по X: "))
+ y = float (input("Введите значение по Y: "))
  points.append((x, y))
 
-# Инициализация переменных для хранения номера ближайшей точки и расстояния
 closest_point_index = 0
 closest_distance = float('inf')
 
@@ -58,11 +21,8 @@ closest_distance = float('inf')
 for i, (x, y) in enumerate(points):
  distance_to_origin = distance(0, 0, x, y)
  if distance_to_origin < closest_distance:
- closest_point_index = i + 1 # Индексация начинается с 1
- closest_distance = distance_to_origin
+     closest_point_index = i + 1 # Индексация начинается с 1
+     closest_distance = distance_to_origin
 
-# Вывод результатов
 print("Номер ближайшей точки:", closest_point_index)
 print("Расстояние до начала координат:", closest_distance)
- 
-
