@@ -2,17 +2,14 @@
 '''14. В задаче 12 преобразовать матрицу таким образом, чтобы все
 элементы ниже и выше главной диагонали были нулевыми.'''
 
- 
 import numpy as np
 
-# Функция для приведения матрицы к виду с нулевыми элементами ниже главной диагонали
 def zero_below_main_diag(matrix):
     for i in range(len(matrix)):
         for j in range(i + 1):
             matrix[i][j] = 0
     return matrix
 
-# Функция для приведения матрицы к виду с нулевыми элементами выше и ниже главной диагонали
 def zero_above_and_below_main_diag(matrix):
     for i in range(len(matrix)):
         for j in range(i + 1):
@@ -21,7 +18,6 @@ def zero_above_and_below_main_diag(matrix):
             matrix[i][j + i] = 0
     return matrix
 
-# Пример использования функций
 n = 5 # Размер матрицы
 a = np.random.randint(1, 10, size=(n, n)) # Создание случайной матрицы
 print("Исходная матрица:")
