@@ -1,4 +1,13 @@
- 
+ import numpy as np
+import array
+a = int(input('Введите размерность массива:'))
+arr = [0]*a
+for i in range (len(arr)):
+    arr[i]=int(input('Введите значение ячейки массива:'))
+a[a < 0] = np.sort(a[a < 0])
+print(a)
+
+
 # Функция для сортировки отрицательных элементов массива по убыванию
 def sort_negative_descending(arr):
  for i in range(len(arr) - 1):
