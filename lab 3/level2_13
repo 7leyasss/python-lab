@@ -1,4 +1,6 @@
- 
+'''Максимальный элемент массива среди элементов с четными
+индексами заменить значением его индекса'''
+
 def replace_max_even_with_index(arr):
     max_element = None
     max_index = None
