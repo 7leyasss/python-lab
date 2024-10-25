@@ -1,5 +1,4 @@
  
-# Функция для подсчета количества отрицательных элементов в строке матрицы
 def count_neg_elements(matrix):
     count = 0
     for element in matrix:
@@ -7,20 +6,16 @@ def count_neg_elements(matrix):
             count += 1
     return count
 
-# Функция для поиска индексов строк с минимальным и максимальным числом отрицательных элементов
 def find_min_max_rows(matrix):
     min_row_idx = min(range(len(matrix)), key=lambda x: count_neg_elements(matrix[x]))
     max_row_idx = max(range(len(matrix)), key=lambda x: count_neg_elements(matrix[x]))
     return min_row_idx, max_row_idx
 
-# Функция для обмена строк матрицы
 def swap_rows(matrix, min_row_idx, max_row_idx):
     temp = matrix[min_row_idx]
     matrix[min_row_idx] = matrix[max_row_idx]
     matrix[max_row_idx] = temp
     return matrix
-
-# Пример использования функций
 X = [[1, -2, 3, -4, 5],
      [-1, 2, -3, 4, -5],
      [1, 2, 3, 4, 5],
@@ -31,5 +26,3 @@ X = [[1, -2, 3, -4, 5],
 min_row_idx, max_row_idx = find_min_max_rows(X)
 X = swap_rows(X, min_row_idx, max_row_idx)
 print(X)
- 
-Этот код находит строки матрицы  X  с минимальным и максимальным числом отрицательных элементов, а затем меняет их местами.
