@@ -1,0 +1,9 @@
+from random import randint, seed
+seed(24)
+task1 =randint (1, 33)
+task2 = randint (1, 9)
+task3 = randint (1, 14)
+
+print (task1, task2, task3)
+
+#25 3 14
