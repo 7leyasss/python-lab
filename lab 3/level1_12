@@ -1,0 +1,21 @@
+'''Определить значение и номер последнего отрицательного эле
+мента массива размером 8,'''
+
+ 
+def get_last_negative_element(arr):
+    for i in reversed(range(len(arr))):
+        if arr[i] < 0:
+            return arr[i], i
+    return None, None
+
+# Пример использования функции
+arr = [1, -2, 3, -4, 5, 6, -7, 8]
+print("Исходный массив:", arr)
+last_negative_value, last_negative_index = get_last_negative_element(arr)
+if last_negative_value:
+    print("Последний отрицательный элемент:", last_negative_value)
+    print("Индекс последнего отрицательного элемента:", last_negative_index)
+else:
+    print("В массиве нет отрицательных элементов.")
+ 
+Этот код определяет функцию  get_last_negative_element , которая принимает массив и возвращает значение и индекс последнего отрицательного элемента. Затем он демонстрирует использование этой функции на примере массива  arr .
