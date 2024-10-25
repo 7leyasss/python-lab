@@ -1,0 +1,25 @@
+Вот пример кода на Python, который демонстрирует, как преобразовать массив так, чтобы все его элементы принадлежали отрезку $[-1, 1]$ и как выполнить обратное преобразование:
+ 
+# Функция для преобразования массива
+def normalize_array(arr):
+    min_val = min(arr)
+    max_val = max(arr)
+    scale = (max_val - min_val) / 2
+    return [(x - min_val) / scale for x in arr]
+
+# Функция для обратного преобразования массива
+def denormalize_array(arr):
+    min_val = min(arr)
+    max_val = max(arr)
+    scale = (max_val - min_val) / 2
+    return [(x * scale) + min_val for x in arr]
+
+# Пример использования функций
+original_array = [1, 2, 3, 4, 5]
+normalized_array = normalize_array(original_array)
+print("Исходный массив:", original_array)
+print("Нормализованный массив:", normalized_array)
+denormalized_array = denormalize_array(normalized_array)
+print("Обратное преобразование:", denormalized_array)
+ 
+Этот код сначала определяет две функции:  normalize_array , которая преобразует массив так, чтобы все его элементы принадлежали отрезку $[-1, 1]$, и  denormalize_array , которая выполняет обратное преобразование. Затем он использует эти функции на примере исходного массива  [1, 2, 3, 4, 5] .
