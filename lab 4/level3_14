@@ -1,33 +1,18 @@
-'''12. Привести заданную квадратную матрицу а размером п х п к такому виду, чтобы все элементы ниже главной диагонали были нулевыми. Использовать линейные преобразования (умножение строки на число, сложение строк).'''
-'''14. В задаче 12 преобразовать матрицу таким образом, чтобы все
-элементы ниже и выше главной диагонали были нулевыми.'''
-
 import numpy as np
+n = 5 
+a = np.random.randint(1, 10, size=(n, n))
+                      
+for i in range (5):
+    for j in range (i+1, 5):
+        a[i][j]=0
 
-def zero_below_main_diag(matrix):
-    for i in range(len(matrix)):
-        for j in range(i + 1):
-            matrix[i][j] = 0
-    return matrix
+for i in range (5):
+    for j in range (i):
+        a[i][j]=0
+print (a)
 
-def zero_above_and_below_main_diag(matrix):
-    for i in range(len(matrix)):
-        for j in range(i + 1):
-            matrix[i][j] = 0
-        for j in range(len(matrix) - i):
-            matrix[i][j + i] = 0
-    return matrix
-
-n = 5 # Размер матрицы
-a = np.random.randint(1, 10, size=(n, n)) # Создание случайной матрицы
-print("Исходная матрица:")
-print(a)
-
-b = zero_below_main_diag(a) # Применение функции для приведения матрицы к виду с нулевыми элементами ниже главной диагонали
-print("Матрица с нулевыми элементами ниже главной диагонали:")
-print(b)
-
-c = zero_above_and_below_main_diag(a) # Применение функции для приведения матрицы к виду с нулевыми элементами выше и ниже главной диагонали
-print("Матрица с нулевыми элементами выше и ниже главной диагонали:")
-print(c)
- 
+#[[7 0 0 0 0]
+ [0 6 0 0 0]
+ [0 0 5 0 0]
+ [0 0 0 3 0]
+ [0 0 0 0 7]]
