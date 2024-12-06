@@ -3,27 +3,22 @@
 import numpy as np
 
 def sort_row(row, order_func):
-    """Сортирует строку с использованием переданной функции для порядка сортировки."""
     return order_func(row)
 
 def process_matrix(matrix):
-    """Обрабатывает матрицу, сортируя четные строки по возрастанию, а нечетные - по убыванию."""
     for i in range(matrix.shape[0]):
-        if i % 2 == 0:  # Четная строка
+        if i % 2 == 0: #четная
             matrix[i] = sort_row(matrix[i], np.sort)
-        else:  # Нечетная строка
+        else:  #нечетная
             matrix[i] = sort_row(matrix[i], lambda row: np.sort(row)[::-1])
     return matrix
 
-# Пример матрицы
 matrix = np.array([[9, 7, 5], 
                    [6, 3, 2], 
                    [8, 1, 4], 
                    [5, 11, 3]])
 
-# Обработка матрицы
 sorted_matrix = process_matrix(matrix)
 
-# Вывод результата
 print("Обработанная матрица:")
 print(sorted_matrix)
