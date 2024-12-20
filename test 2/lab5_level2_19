@@ -27,3 +27,43 @@ for row in matrix:
 Матрица после удаления строк с нулями:
 [1, 2, 3]
 [6, 7, 8]
+
+
+class Matrix:
+    def __init__(self, matrix):
+        self.matrix = matrix
+
+    def delete_rows_with_zeros(self):
+        # Проходим по строкам матрицы и сохраняем только те, которые не содержат нулевых элементов
+        new_matrix = []
+        for row in self.matrix:
+            if 0 not in row:
+                new_matrix.append(row)
+        self.matrix = new_matrix  # Обновляем матрицу с новыми строками
+
+    def display(self):
+        # Метод для вывода матрицы на экран
+        for row in self.matrix:
+            print(row)
+
+# Пример использования:
+matrix_data = [
+    [1, 2, 3],
+    [4, 0, 6],
+    [7, 8, 9],
+    [0, 1, 2]
+]
+
+# Создаем объект класса Matrix
+matrix = Matrix(matrix_data)
+
+# Выводим исходную матрицу
+print("Исходная матрица:")
+matrix.display()
+
+# Удаляем строки с нулями
+matrix.delete_rows_with_zeros()
+
+# Выводим матрицу после удаления строк с нулями
+print("\nМатрица после удаления строк с нулями:")
+matrix.display()
