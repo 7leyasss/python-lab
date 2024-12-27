@@ -1,30 +1,5 @@
 3. На основании результатов соревнований по прыжкам в длину (фамилии и результаты трех попыток) составить итоговый протокол соревнований, считая, что в зачет идет лучший результат.
 
-participants = [
-    ("Иванов", 1.32, 1.45, 1.50),
-    ("Петров", 1.18, 1.23, 1.40),
-    ("Сидоров", 1.50, 1.60, 1.55),
-    ("Кузнецов", 1.15, 1.20, 1.10),
-    ("Михайлов", 1.30, 1.35, 1.25)
-]
-
-def best_result(participant):
-    return max(participant[1], participant[2], participant[3])
-
-sorted_participants = sorted(participants, key=best_result, reverse=True)
-
-print("Итоговый протокол соревнований по прыжкам в длину:")
-for i, participant in enumerate(sorted_participants, start=1):
-    best_jump = best_result(participant)
-    print(f"Место {i}: {participant[0]} — лучший результат {best_jump} м")
-
-#Итоговый протокол соревнований по прыжкам в длину:
-Место 1: Сидоров — лучший результат 1.6 м
-Место 2: Иванов — лучший результат 1.5 м
-Место 3: Петров — лучший результат 1.4 м
-Место 4: Михайлов — лучший результат 1.35 м
-Место 5: Кузнецов — лучший результат 1.2 м
-
 class Athlete:
     def __init__(self, surname, attempt1, attempt2, attempt3):
         self.surname = surname  # Фамилия спортсмена
@@ -33,13 +8,11 @@ class Athlete:
         self.attempt3 = attempt3  # Результат третьей попытки
 
     def best_attempt(self):
-        # Возвращаем лучший результат из трех попыток
         return max(self.attempt1, self.attempt2, self.attempt3)
 
     def __repr__(self):
         return f"{self.surname}: {self.best_attempt()} м"
 
-# Список участников с их результатами
 athletes = [
     Athlete("Иванов", 7.15, 7.20, 7.10),
     Athlete("Петров", 7.25, 7.15, 7.30),
@@ -47,10 +20,14 @@ athletes = [
     Athlete("Козлов", 6.95, 7.05, 7.00),
 ]
 
-# Сортировка участников по лучшему результату (по убыванию)
 athletes_sorted = sorted(athletes, key=lambda x: x.best_attempt(), reverse=True)
 
-# Выводим итоговый протокол соревнований
 print("Итоговый протокол соревнований по прыжкам в длину:")
 for i, athlete in enumerate(athletes_sorted, start=1):
     print(f"{i}. {athlete}")
+
+#Итоговый протокол соревнований по прыжкам в длину:
+1. Сидоров: 7.4 м
+2. Петров: 7.3 м
+3. Иванов: 7.2 м
+4. Козлов: 7.05 м
