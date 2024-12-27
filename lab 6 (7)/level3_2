@@ -23,3 +23,67 @@ for team in stage2_teams:
 - Команда 16
 - Команда 17
 - Команда 18
+
+class Team:
+    def __init__(self, name, score1, score2, score3):
+        self.name = name  # Название команды
+        self.score1 = score1  # Результат 1 матча
+        self.score2 = score2  # Результат 2 матча
+        self.score3 = score3  # Результат 3 матча
+
+    def total_score(self):
+        # Суммируем результаты всех матчей, это будет итоговый результат команды
+        return self.score1 + self.score2 + self.score3
+
+    def __repr__(self):
+        return f"{self.name}: {self.total_score()} очков"
+
+# Список команд (по 12 команд в каждой группе)
+group_1 = [
+    Team("Команда 1", 8, 6, 7),
+    Team("Команда 2", 10, 9, 8),
+    Team("Команда 3", 7, 7, 8),
+    Team("Команда 4", 9, 10, 9),
+    Team("Команда 5", 6, 5, 7),
+    Team("Команда 6", 8, 9, 8),
+    Team("Команда 7", 7, 8, 6),
+    Team("Команда 8", 9, 10, 8),
+    Team("Команда 9", 7, 6, 7),
+    Team("Команда 10", 8, 8, 7),
+    Team("Команда 11", 10, 9, 8),
+    Team("Команда 12", 7, 7, 6),
+]
+
+group_2 = [
+    Team("Команда 13", 9, 8, 8),
+    Team("Команда 14", 10, 10, 9),
+    Team("Команда 15", 8, 7, 9),
+    Team("Команда 16", 9, 10, 8),
+    Team("Команда 17", 7, 6, 6),
+    Team("Команда 18", 10, 9, 9),
+    Team("Команда 19", 8, 7, 8),
+    Team("Команда 20", 7, 8, 7),
+    Team("Команда 21", 9, 8, 9),
+    Team("Команда 22", 8, 8, 7),
+    Team("Команда 23", 10, 9, 8),
+    Team("Команда 24", 6, 7, 6),
+]
+
+# Функция для выбора 6 лучших команд из группы
+def get_top_teams(group):
+    # Сортируем команды по общему результату (по убыванию)
+    sorted_group = sorted(group, key=lambda team: team.total_score(), reverse=True)
+    # Возвращаем только первые 6 команд
+    return sorted_group[:6]
+
+# Получаем 6 лучших команд из каждой группы
+top_teams_group_1 = get_top_teams(group_1)
+top_teams_group_2 = get_top_teams(group_2)
+
+# Итоговый список команд для второго этапа
+final_teams = top_teams_group_1 + top_teams_group_2
+
+# Выводим список команд для второго этапа
+print("Список команд участников второго этапа:")
+for i, team in enumerate(final_teams, start=1):
+    print(f"{i}. {team}")
