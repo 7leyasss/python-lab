@@ -1,27 +1,5 @@
 4. Результаты соревнований по прыжкам в высоту опредляются по лучшей из двух попыток. Вывести список участников в порядке занятых мест
 
-participants = [
-    ("Иван", 1.85, 1.90),
-    ("Анна", 1.80, 1.95),
-    ("Максим", 1.92, 1.91),
-    ("Ева", 1.88, 1.85),
-    ("Петр", 1.75, 1.80)
-]
-
-def best_result(participant):
-    return max(participant[1], participant[2])
-
-sorted_participants = sorted(participants, key=best_result, reverse=True)
-
-for i, participant in enumerate(sorted_participants, start=1):
-    print(f"Место {i}: {participant[0]} — лучший результат {best_result(participant)} м")
-
-#Место 1: Анна — лучший результат 1.95 м
-Место 2: Максим — лучший результат 1.92 м
-Место 3: Иван — лучший результат 1.9 м
-Место 4: Ева — лучший результат 1.88 м
-Место 5: Петр — лучший результат 1.8 м
-
 class Athlete:
     def __init__(self, name, attempt1, attempt2):
         self.name = name  # Имя спортсмена
@@ -29,7 +7,6 @@ class Athlete:
         self.attempt2 = attempt2  # Второй результат
 
     def best_attempt(self):
-        # Возвращаем лучший результат из двух попыток
         return max(self.attempt1, self.attempt2)
 
     def __repr__(self):
@@ -42,11 +19,14 @@ athletes = [
     Athlete("Сидоров", 2.15, 2.00),
     Athlete("Козлов", 1.90, 2.00),
 ]
-
-# Сортировка участников по лучшему результату (по убыванию)
 athletes_sorted = sorted(athletes, key=lambda x: x.best_attempt(), reverse=True)
 
-# Выводим список участников с результатами
 print("Результаты соревнований по прыжкам в высоту:")
 for i, athlete in enumerate(athletes_sorted, start=1):
     print(f"{i}. {athlete}")
+
+#Результаты соревнований по прыжкам в высоту:
+1. Сидоров: 2.15 м
+2. Иванов: 2.1 м
+3. Петров: 2.05 м
+4. Козлов: 2.0 м
