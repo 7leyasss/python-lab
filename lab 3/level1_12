@@ -1,17 +1,21 @@
 '''Определить значение и номер последнего отрицательного эле
 мента массива размером 8,'''
 
-def get_last_negative_element(arr):
-    for i in reversed(range(len(arr))):
-        if arr[i] < 0:
-            return arr[i], i
-    return None, None
+# Массив размером 8
+array = [3, -5, 7, -2, 8, -9, 6, 4]
 
-arr = [1, -2, 3, -4, 5, 6, -7, 8]
-print("Исходный массив:", arr)
-last_negative_value, last_negative_index = get_last_negative_element(arr)
-if last_negative_value:
-    print("Последний отрицательный элемент:", last_negative_value)
-    print("Индекс последнего отрицательного элемента:", last_negative_index)
+# Инициализируем переменные
+last_negative_value = None
+last_negative_index = -1
+
+# Перебираем массив
+for i in range(len(array)):
+    if array[i] < 0:  # Если элемент отрицательный
+        last_negative_value = array[i]
+        last_negative_index = i
+
+# Выводим результат
+if last_negative_value is not None:
+    print(f"Последний отрицательный элемент: {last_negative_value}, его индекс: {last_negative_index}")
 else:
-    print("В массиве нет отрицательных элементов.")
+    print("Отрицательных элементов в массиве нет.")
