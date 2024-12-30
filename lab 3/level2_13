@@ -1,20 +1,22 @@
 '''Максимальный элемент массива среди элементов с четными
 индексами заменить значением его индекса'''
 
-def replace_max_even_with_index(arr):
-    max_element = None
-    max_index = None
-    for i in range(len(arr)):
-        if i % 2 == 0 and (not max_element or arr[i] > max_element):
-            max_element = arr[i]
-            max_index = i
-    if max_element:
-        arr[max_index] = max_index
-    return arr
+# Исходный массив
+array = [3, 7, 1, 4, 9, 2, 6, 8]
 
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-print("Исходный массив:", arr)
-arr = replace_max_even_with_index(arr)
-print("Преобразованный массив:", arr)
- 
+# Инициализация переменных для хранения максимального значения и его индекса
+max_value = float('-inf')
+max_index = -1
 
+# Проходим по массиву, учитывая только чётные индексы
+for i in range(0, len(array), 2):  # Шаг 2 для чётных индексов
+    if array[i] > max_value:
+        max_value = array[i]
+        max_index = i
+
+# Замена максимального элемента его индексом
+if max_index != -1:  # Если в массиве есть элементы
+    array[max_index] = max_index
+
+# Вывод результата
+print("Массив после замены:", array)
