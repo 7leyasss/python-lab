@@ -6,7 +6,9 @@ x_values = np.array([270, 327, 627, 927, 1077, 1227, 1377, 1527, 1677, 1827, 212
 
 a, b, c = 1.5, -2, 5
 
-# Вычисление f(x)
+# Вычисление f(x)= a· x3+ 1 / b·x +c
+
+
 f_values = a * x_values + b * np.cos(x_values) + c
 
 plt.figure(figsize=(10, 5))
