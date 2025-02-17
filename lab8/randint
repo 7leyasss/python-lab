@@ -3,4 +3,4 @@ seed(24)
 task1 =randint (1, 15)
 print (task1)
 
-#12
+#11
