@@ -5,3 +5,6 @@ sorted_surnames = sorted(surnames)
 output_string = ", ".join(sorted_surnames)
 
 print("Отсортированный список:", output_string)
+
+'''Пример: "Иванов,Петров,Сидоров,Кузнецов,Смирнов"
+#Иванов,Кузнецов,Петров,Сидоров,Смирнов'''
