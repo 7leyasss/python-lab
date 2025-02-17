@@ -4,13 +4,11 @@ import matplotlib.pyplot as plt
 # Данные X из таблицы №24
 x_values = np.array([270, 327, 627, 927, 1077, 1227, 1377, 1527, 1677, 1827, 2127])
 
-# Коэффициенты функции (можешь изменить)
 a, b, c = 1.5, -2, 5
 
 # Вычисление f(x)
 f_values = a * x_values + b * np.cos(x_values) + c
 
-# Построение графика
 plt.figure(figsize=(10, 5))
 plt.plot(x_values, f_values, marker="o", linestyle="-", color="b", label=r"$f(x) = a \cdot x + b \cdot \cos x + c$")
 plt.xlabel("X")
