@@ -1,0 +1,45 @@
+'''Максимальный элемент массива среди элементов с четными индексами заменить значением его индекса.'''
+# Функция для чтения массива из файла
+def read_array_from_file(filename):
+    with open(filename, 'r') as file:
+        return list(map(int, file.readline().split()))
+
+# Функция для записи массива в файл
+def write_array_to_file(filename, array):
+    with open(filename, 'w') as file:
+        file.write(' '.join(map(str, array)))
+
+# Функция обработки массива
+def process_array(arr):
+    max_even_index = None
+    max_even_value = float('-inf')
+    
+    # Поиск максимального элемента среди элементов с четными индексами
+    for i in range(0, len(arr), 2):
+        if arr[i] > max_even_value:
+            max_even_value = arr[i]
+            max_even_index = i
+    
+    # Замена максимального элемента на его индекс
+    if max_even_index is not None:
+        arr[max_even_index] = max_even_index
+    
+    return arr
+
+# Основная программа
+input_filename = 'input.txt'  # Файл с входными данными
+output_filename = 'output.txt'  # Файл для результата
+
+# Читаем массив из файла
+array = read_array_from_file(input_filename)
+
+# Обрабатываем массив
+processed_array = process_array(array)
+
+# Записываем результат в файл
+write_array_to_file(output_filename, processed_array)
+
+print("Обработка завершена. Результат записан в", output_filename)
+
+'''файл input.txt
+3 8 2 5 9 4 7 1'''
