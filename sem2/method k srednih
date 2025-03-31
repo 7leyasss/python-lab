@@ -11,9 +11,9 @@ def generate_data(k=3, n=20, seed=42):
     x, y = [], []
     for cx, cy, r in zip(centers, radii):
         angles = np.random.uniform(0, 2 * np.pi, n)
-        radii = np.random.uniform(0, r, n)
-        x.extend(cx + radii * np.cos(angles))
-        y.extend(cy + radii * np.sin(angles))
+        r_vals = np.sqrt(np.random.uniform(0, r**2, n))  # Исправлено: равномерное распределение точек внутри круга
+        x.extend(cx + r_vals * np.cos(angles))
+        y.extend(cy + r_vals * np.sin(angles))
     
     return np.array(x), np.array(y)
 
@@ -27,8 +27,8 @@ def k_means(x, y, k=3, max_iters=100, tol=0.001):
         distances = np.linalg.norm(data[:, np.newaxis] - centers, axis=2)
         labels = np.argmin(distances, axis=1)
         
-        new_centers = np.array([data[labels == i].mean(axis=0) for i in range(k)])
-        history.append((labels.copy(), centers.copy()))
+        new_centers = np.array([data[labels == i].mean(axis=0) if np.any(labels == i) else centers[i] for i in range(k)])
+        history.append((labels.copy(), new_centers.copy()))  # Исправлено: сохранение новых центров вместо старых
         
         if np.all(np.abs(new_centers - centers) < tol):
             break
