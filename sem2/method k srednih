@@ -1,0 +1,62 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
+
+# Функция генерации данных
+def generate_data(k=3, n=20, seed=42):
+    np.random.seed(seed)
+    centers = [(5, 5), (15, 15), (25, 5)]  # Центры кластеров
+    radii = [2, 2, 2]  # Радиусы кластеров
+    
+    x, y = [], []
+    for cx, cy, r in zip(centers, radii):
+        angles = np.random.uniform(0, 2 * np.pi, n)
+        radii = np.random.uniform(0, r, n)
+        x.extend(cx + radii * np.cos(angles))
+        y.extend(cy + radii * np.sin(angles))
+    
+    return np.array(x), np.array(y)
+
+# Функция k-средних
+def k_means(x, y, k=3, max_iters=100, tol=0.001):
+    data = np.column_stack((x, y))
+    centers = data[np.random.choice(len(data), k, replace=False)]
+    history = []
+    
+    for _ in range(max_iters):
+        distances = np.linalg.norm(data[:, np.newaxis] - centers, axis=2)
+        labels = np.argmin(distances, axis=1)
+        
+        new_centers = np.array([data[labels == i].mean(axis=0) for i in range(k)])
+        history.append((labels.copy(), centers.copy()))
+        
+        if np.all(np.abs(new_centers - centers) < tol):
+            break
+        centers = new_centers
+    
+    return history
+
+# Визуализация
+x, y = generate_data()
+history = k_means(x, y)
+
+def update_plot(iteration):
+    labels, centers = history[iteration]
+    plt.cla()
+    for i in range(3):
+        plt.scatter(x[labels == i], y[labels == i], label=f'Cluster {i+1}')
+        plt.scatter(*centers[i], marker='x', s=200, color='black')
+    plt.legend()
+    plt.title(f'Iteration {iteration}')
+    plt.xlim(0, 30)
+    plt.ylim(0, 20)
+    plt.draw()
+
+fig, ax = plt.subplots()
+plt.subplots_adjust(bottom=0.2)
+ax_slider = plt.axes([0.2, 0.05, 0.65, 0.03])
+slider = Slider(ax_slider, 'Iteration', 0, len(history) - 1, valinit=0, valstep=1)
+
+slider.on_changed(lambda val: update_plot(int(val)))
+update_plot(0)
+plt.show()
