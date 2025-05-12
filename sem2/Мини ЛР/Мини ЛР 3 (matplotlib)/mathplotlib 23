@@ -1,0 +1,19 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Данные X из таблицы №24
+x_values = np.array([270, 327, 627, 927, 1077, 1227, 1377, 1527, 1677, 1827, 2127])
+
+a, b, c = 1.5, 2, 5
+
+# Вычисление f(x) = a * x^3 + 1 / (b * x) + c
+f_values = a * x_values**3 + 1 / (b * x_values) + c
+
+plt.figure(figsize=(10, 5))
+plt.plot(x_values, f_values, marker="o", linestyle="-", color="g", label=r"$f(x) = a \cdot x^3 + \frac{1}{b \cdot x} + c$")
+plt.xlabel("X")
+plt.ylabel("f(X)")
+plt.title("График функции f(x) = a·x³ + 1 / (b·x) + c")
+plt.legend()
+plt.grid()
+plt.show()
