@@ -1,62 +1,84 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
+from sklearn.datasets import make_blobs
 
-# Функция генерации данных
-def generate_data(k=3, n=20, seed=42):
-    np.random.seed(seed)
-    centers = [(5, 5), (15, 15), (25, 5)]  # Центры кластеров
-    radii = [2, 2, 2]  # Радиусы кластеров
+# 1. Генерация данных в виде колец
+def generate_ring_data(centers, radii, n_points=20, noise=0.1):
+    points = []
+    labels = []
     
-    x, y = [], []
-    for cx, cy, r in zip(centers, radii):
-        angles = np.random.uniform(0, 2 * np.pi, n)
-        r_vals = np.sqrt(np.random.uniform(0, r**2, n))  # Исправлено: равномерное распределение точек внутри круга
-        x.extend(cx + r_vals * np.cos(angles))
-        y.extend(cy + r_vals * np.sin(angles))
+    for i, ((cx, cy), (r_in, r_out)) in enumerate(zip(centers, radii)):
+        angles = np.random.uniform(0, 2*np.pi, n_points)
+        r = np.random.uniform(r_in, r_out, n_points)
+        x = cx + r * np.cos(angles) + np.random.normal(0, noise, n_points)
+        y = cy + r * np.sin(angles) + np.random.normal(0, noise, n_points)
+        
+        points.extend(np.column_stack((x, y)))
+        labels.extend([i] * n_points)
     
-    return np.array(x), np.array(y)
+    return np.array(points), np.array(labels)
 
-# Функция k-средних
-def k_means(x, y, k=3, max_iters=100, tol=0.001):
-    data = np.column_stack((x, y))
-    centers = data[np.random.choice(len(data), k, replace=False)]
+# 2. Реализация метода k-средних с остановкой по числу итераций
+def k_means(data, k=3, max_iters=100):
+    centroids = data[np.random.choice(len(data), k, replace=False)]
     history = []
     
     for _ in range(max_iters):
-        distances = np.linalg.norm(data[:, np.newaxis] - centers, axis=2)
-        labels = np.argmin(distances, axis=1)
+        distances = np.sqrt(((data - centroids[:, np.newaxis])**2).sum(axis=2))
+        labels = np.argmin(distances, axis=0)
         
-        new_centers = np.array([data[labels == i].mean(axis=0) if np.any(labels == i) else centers[i] for i in range(k)])
-        history.append((labels.copy(), new_centers.copy()))  # Исправлено: сохранение новых центров вместо старых
+        history.append((labels.copy(), centroids.copy()))
         
-        if np.all(np.abs(new_centers - centers) < tol):
-            break
-        centers = new_centers
+        new_centroids = np.array([data[labels == i].mean(axis=0) for i in range(k)])
+        
+        for i in range(k):
+            if np.isnan(new_centroids[i]).any():
+                new_centroids[i] = centroids[i]
+        
+        centroids = new_centroids
     
     return history
 
-# Визуализация
-x, y = generate_data()
-history = k_means(x, y)
+def visualize_kmeans(data, history):
+    fig, ax = plt.subplots(figsize=(10, 8))
+    plt.subplots_adjust(bottom=0.2)
+    
+    def update(iter_num):
+        ax.clear()
+        labels, centroids = history[iter_num]
+        
+        for i in range(len(centroids)):
+            cluster_data = data[labels == i]
+            ax.scatter(cluster_data[:, 0], cluster_data[:, 1], 
+                      label=f'Cluster {i+1}', alpha=0.6)
+            ax.scatter(centroids[i, 0], centroids[i, 1], 
+                      marker='x', s=200, color='black', linewidths=2)
+        
+        ax.set_title(f'K-means Clustering (Iteration {iter_num+1})')
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+        ax.legend()
+        ax.grid(True)
+    
+    ax_slider = plt.axes([0.2, 0.05, 0.65, 0.03])
+    slider = Slider(ax_slider, 'Iteration', 1, len(history), 
+                   valinit=1, valstep=1)
+    
+    slider.on_changed(lambda val: update(int(val-1)))
+    
+    update(0)
+    plt.show()
 
-def update_plot(iteration):
-    labels, centers = history[iteration]
-    plt.cla()
-    for i in range(3):
-        plt.scatter(x[labels == i], y[labels == i], label=f'Cluster {i+1}')
-        plt.scatter(*centers[i], marker='x', s=200, color='black')
-    plt.legend()
-    plt.title(f'Iteration {iteration}')
-    plt.xlim(0, 30)
-    plt.ylim(0, 20)
-    plt.draw()
-
-fig, ax = plt.subplots()
-plt.subplots_adjust(bottom=0.2)
-ax_slider = plt.axes([0.2, 0.05, 0.65, 0.03])
-slider = Slider(ax_slider, 'Iteration', 0, len(history) - 1, valinit=0, valstep=1)
-
-slider.on_changed(lambda val: update_plot(int(val)))
-update_plot(0)
-plt.show()
+# Основная программа
+if __name__ == "__main__":
+    centers = [(5, 5), (15, 15), (25, 5)] 
+    radii = [(2, 4), (2, 4), (2, 4)]       
+    n_points = 20                           
+    
+    data, true_labels = generate_ring_data(centers, radii, n_points)
+    x, y = data[:, 0], data[:, 1]
+    
+    history = k_means(data, k=3, max_iters=100)  # Для номера 24 (24%3=0) - остановка по итерациям
+    
+    visualize_kmeans(data, history)
