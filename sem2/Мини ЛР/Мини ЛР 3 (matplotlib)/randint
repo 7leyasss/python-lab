@@ -1,6 +1,0 @@
-from random import randint, seed
-seed(24)
-task1 =randint (1, 24)
-print (task1)
-
-#23
