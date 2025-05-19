@@ -1,0 +1,132 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
+import random
+
+# 1. Выбор функции - гармоническая (номер 24: 24 % 5 = 4)
+def true_function(x, a, b, c):
+    return a * np.sin(b * x) + c
+
+def generate_data():
+    x_min = 0
+    x_max = 10
+    points = 100
+    x = np.linspace(x_min, x_max, points)
+    
+    #  произвольно
+    a_true = 2.5
+    b_true = 1.3
+    c_true = 1.8
+    
+    y_true = true_function(x, a_true, b_true, c_true)
+    y_noisy = y_true + np.array([random.uniform(-3, 3) for _ in range(points)])
+    
+    return x, y_true, y_noisy, a_true, b_true, c_true
+
+def get_da(x, y, a, b, c):
+    n = len(x)
+    return (2/n) * sum((a * np.sin(b * x) + c - y) * np.sin(b * x))
+
+def get_db(x, y, a, b, c):
+    n = len(x)
+    return (2/n) * sum((a * np.sin(b * x) + c - y) * a * x * np.cos(b * x))
+
+def get_dc(x, y, a, b, c):
+    n = len(x)
+    return (2/n) * sum(a * np.sin(b * x) + c - y)
+
+# параметры для градиентного спуска
+def initialize_parameters():
+    speed = 0.01 
+    epochs = 500   # Количество итераций
+    a0 = 1.0      
+    b0 = 1.0      
+    c0 = 0.0      
+    return speed, epochs, a0, b0, c0
+
+def gradient_descent(x, y, speed, epochs, a0, b0, c0):
+    a, b, c = a0, b0, c0
+    a_history = [a]
+    b_history = [b]
+    c_history = [c]
+    mse_history = []
+    
+    for epoch in range(epochs):
+        da = get_da(x, y, a, b, c)
+        db = get_db(x, y, a, b, c)
+        dc = get_dc(x, y, a, b, c)
+        
+        a -= speed * da
+        b -= speed * db
+        c -= speed * dc
+        
+        a_history.append(a)
+        b_history.append(b)
+        c_history.append(c)
+        
+        # вычисляем MSE
+        y_pred = true_function(x, a, b, c)
+        mse = np.mean((y_pred - y)**2)
+        mse_history.append(mse)
+    
+    return a_history, b_history, c_history, mse_history
+
+def visualize(x, y_true, y_noisy, a_history, b_history, c_history, mse_history):
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
+    plt.subplots_adjust(bottom=0.2)
+    
+    def update(epoch):
+        ax1.clear()
+        ax2.clear()
+        
+        a = a_history[epoch]
+        b = b_history[epoch]
+        c = c_history[epoch]
+        
+        y_current = true_function(x, a, b, c)
+        
+        # рисуем данные и кривую
+        ax1.scatter(x, y_noisy, color='blue', label='Зашумленные данные')
+        ax1.plot(x, y_true, 'g-', label='Истинная функция')
+        ax1.plot(x, y_current, 'r-', label='Текущая аппроксимация')
+        ax1.set_title(f'Гармоническая регрессия (Эпоха {epoch})\na={a:.2f}, b={b:.2f}, c={c:.2f}')
+        ax1.set_xlabel('x')
+        ax1.set_ylabel('y')
+        ax1.legend()
+        ax1.grid(True)
+        
+        # Рисуем график MSE
+        ax2.plot(mse_history[:epoch], 'b-')
+        ax2.set_title('Среднеквадратичная ошибка (MSE)')
+        ax2.set_xlabel('Эпоха')
+        ax2.set_ylabel('MSE')
+        ax2.grid(True)
+        
+        plt.draw()
+    
+    ax_slider = plt.axes([0.2, 0.05, 0.65, 0.03])
+    slider = Slider(ax_slider, 'Эпоха', 0, len(a_history)-1, valinit=0, valstep=1)
+    
+    slider.on_changed(update)
+    
+    update(0)
+    plt.show()
+
+# Основная программа
+def main():
+    x, y_true, y_noisy, a_true, b_true, c_true = generate_data()
+    speed, epochs, a0, b0, c0 = initialize_parameters()
+    a_history, b_history, c_history, mse_history = gradient_descent(
+        x, y_noisy, speed, epochs, a0, b0, c0)
+
+    visualize(x, y_true, y_noisy, a_history, b_history, c_history, mse_history)
+    
+    # вывод результатов
+    print("Истинные параметры:")
+    print(f"a = {a_true}, b = {b_true}, c = {c_true}")
+    print("\nНайденные параметры:")
+    print(f"a = {a_history[-1]:.4f}, b = {b_history[-1]:.4f}, c = {c_history[-1]:.4f}")
+    print(f"\nФинальная MSE: {mse_history[-1]:.4f}")
+
+if __name__ == "__main__":
+    main()
