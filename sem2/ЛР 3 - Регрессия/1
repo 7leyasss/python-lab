@@ -13,7 +13,7 @@ def generate_data(x_min, x_max, points, a, b, c):
     return x, y
 
 def get_da(x, y, a, b, c):
-    return (2 / len(x)) * np.sum((a * np.power(x, 2*b) + c * np.power(x, b) - y * np.power(x, b))
+    return (2 / len(x)) * np.sum((a * np.power(x, 2*b) + c * np.power(x, b) - y * np.power(x, b)))
 
 def get_db(x, y, a, b, c):
     return (2 / len(x)) * np.sum(a * np.power(x, b) * np.log(np.abs(x)) * (a * np.power(x, b) + c - y))
