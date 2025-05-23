@@ -1,0 +1,71 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import linear_model
+
+data = {
+    'area': [28, 42, 45, 52, 56, 68, 70, 75, 90],
+    'price': ['3,10', '3,80', '3,90', '4,40', '4,50', '5,90', '5,60', '6,40', '7,30']
+}
+df = pd.DataFrame(data)
+
+df['price'] = df['price'].str.replace(',', '.').astype(float)
+
+print("Первые строки датасета:")
+print(df.head())
+
+print("\nТипы данных в датасете:")
+print(df.dtypes)
+
+plt.scatter(df['area'], df['price'], color='red')
+plt.xlabel('Площадь (кв.м.)')
+plt.ylabel('Стоимость (млн.руб)')
+plt.title('Зависимость стоимости квартиры от площади')
+plt.grid(True)
+plt.show()
+
+reg = linear_model.LinearRegression()
+
+reg.fit(df[['area']], df['price'])
+
+price_38 = reg.predict([[38]])
+print(f"\nПредсказанная стоимость квартиры 38 м²: {price_38[0]:.2f} млн.руб")
+
+price_200 = reg.predict([[200]])
+print(f"Предсказанная стоимость квартиры 200 м²: {price_200[0]:.2f} млн.руб")
+
+predicted_prices = reg.predict(df[['area']])
+print("\nСравнение фактических и предсказанных цен:")
+print(pd.DataFrame({
+    'Площадь': df['area'],
+    'Фактическая цена': df['price'],
+    'Предсказанная цена': predicted_prices.round(2)
+}))
+
+a = reg.coef_[0]
+b = reg.intercept_
+print(f"\nКоэффициенты модели: a = {a:.4f}, b = {b:.4f}")
+print(f"Уравнение регрессии: price = {a:.4f} * area + {b:.4f}")
+
+plt.scatter(df['area'], df['price'], color='red')
+plt.plot(df['area'], reg.predict(df[['area']]))
+plt.xlabel('Площадь (кв.м.)')
+plt.ylabel('Стоимость (млн.руб)')
+plt.title('Линия регрессии')
+plt.grid(True)
+plt.show()
+
+new_areas = [25, 37, 40, 58, 61, 67, 72, 85, 96, 105, 118]
+pred = pd.DataFrame({'area': new_areas})
+
+p = reg.predict(pred[['area']])
+pred['predicted prices'] = p.round(2)  # округляем до 2 знаков
+
+print("\nРезультаты прогнозирования для новых площадей:")
+print(pred)
+
+try:
+    pred.to_excel('new_predictions.xlsx', index=False)
+    print("\nФайл с прогнозами сохранен как 'new_predictions.xlsx'")
+except Exception as e:
+    print(f"\nНе удалось сохранить файл: {e}")
