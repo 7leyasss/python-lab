@@ -1,1 +1,137 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import (KMeans, DBSCAN, AgglomerativeClustering, 
+                           MeanShift, SpectralClustering, AffinityPropagation,
+                           Birch, OPTICS, MiniBatchKMeans)
+from sklearn.datasets import (make_blobs, make_moons, make_circles,
+                            make_classification, make_swiss_roll)
+from sklearn.preprocessing import StandardScaler
+import random
 
+random.seed(24) 
+algorithms = random.sample(range(1, 12), 3)
+print(f"Выбранные номера алгоритмов: {algorithms}")
+
+algorithm_map = {
+    1: ('KMeans', KMeans),
+    2: ('DBSCAN', DBSCAN),
+    3: ('MeanShift', MeanShift),
+    4: ('Agglomerative', AgglomerativeClustering),
+    5: ('Spectral', SpectralClustering),
+    6: ('AffinityPropagation', AffinityPropagation),
+    7: ('Birch', Birch),
+    8: ('OPTICS', OPTICS),
+    9: ('MiniBatchKMeans', MiniBatchKMeans),
+    10: ('BisectingKMeans', None), 
+    11: ('GaussianMixture', None)   
+}
+
+selected_algorithms = []
+for alg_num in algorithms:
+    name, cls = algorithm_map[alg_num]
+    if cls is not None:
+        selected_algorithms.append((name, cls))
+    else:
+        print(f"Алгоритм {name} не доступен в sklearn для кластеризации")
+
+print("Выбранные алгоритмы для реализации:")
+for name, _ in selected_algorithms:
+    print(f"- {name}")
+
+# 2. Генерация 6 типов данных для кластеризации
+def generate_datasets():
+    n_samples = 500
+    random_state = 24
+    
+    X1, y1 = make_blobs(n_samples=n_samples, centers=3, 
+                       cluster_std=[1.0, 2.5, 0.5],
+                       random_state=random_state)
+    
+    X2, y2 = make_moons(n_samples=n_samples, noise=0.05, 
+                       random_state=random_state)
+    
+    X3, y3 = make_circles(n_samples=n_samples, noise=0.05, 
+                         factor=0.5, random_state=random_state)
+    
+    X4, y4 = make_blobs(n_samples=n_samples, centers=3, 
+                       random_state=random_state)
+    transformation = [[0.6, -0.6], [-0.4, 0.8]]
+    X4 = np.dot(X4, transformation)
+    
+    X5, y5 = make_blobs(n_samples=n_samples, centers=3, 
+                       cluster_std=[1.0, 2.0, 0.5],
+                       random_state=random_state)
+    
+    X6, y6 = make_swiss_roll(n_samples=n_samples, noise=0.05, 
+                            random_state=random_state)
+    X6 = X6[:, [0, 2]] 
+    
+    datasets = [
+        ("Кластеры разной дисперсии", X1),
+        ("Полумесяцы", X2),
+        ("Окружности", X3),
+        ("Анизотропные", X4),
+        ("Разномасштабные", X5),
+        ("Швейцарский рулон", X6)
+    ]
+    
+    return datasets
+
+def apply_kmeans(X, n_clusters=3):
+    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+    return kmeans.fit_predict(X)
+
+def apply_dbscan(X, eps=0.3, min_samples=10):
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+    return dbscan.fit_predict(X)
+
+def apply_agglomerative(X, n_clusters=3):
+    agg = AgglomerativeClustering(n_clusters=n_clusters)
+    return agg.fit_predict(X)
+
+def plot_clusters(X, y_pred, title, algorithm_name):
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap='viridis', s=50, alpha=0.7)
+    plt.title(f"{algorithm_name} - {title}")
+    plt.xlabel("Признак 1")
+    plt.ylabel("Признак 2")
+    plt.grid(True)
+    plt.show()
+
+def main():
+    datasets = generate_datasets()
+    results_table = []
+
+    for data_name, X in datasets:
+        X = StandardScaler().fit_transform(X)
+        
+        row_results = [data_name]
+        
+        for alg_name, alg_class in selected_algorithms:
+            if alg_name == 'KMeans':
+                y_pred = apply_kmeans(X)
+            elif alg_name == 'DBSCAN':
+                y_pred = apply_dbscan(X)
+            elif alg_name == 'Agglomerative':
+                y_pred = apply_agglomerative(X)
+            else:
+                y_pred = np.zeros(X.shape[0])  # Заглушка
+            
+            plot_clusters(X, y_pred, data_name, alg_name)
+            
+            n_clusters = len(np.unique(y_pred))
+            row_results.append(f"{alg_name} ({n_clusters} кластеров)")
+        
+        results_table.append(row_results)
+    
+    print("\nИтоговая таблица результатов (6x3):")
+    print("="*80)
+    print("{:<25} | {:<25} | {:<25}".format(
+        "Тип данных", "Алгоритм 1", "Алгоритм 2"))
+    print("-"*80)
+    for row in results_table:
+        print("{:<25} | {:<25} | {:<25}".format(*row))
+    print("="*80)
+
+if __name__ == "__main__":
+    main()
