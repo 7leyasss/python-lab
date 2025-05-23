@@ -1,5 +1,3 @@
-# Реализация метода k ближайших соседей для классификации точек
-
 import random
 import math
 from collections import Counter
@@ -20,7 +18,6 @@ def generate_data(pointsCount1=50, pointsCount2=50):
     return x, y
 
 def train_test_split(x, y, p=0.8):
-    # Объединяем данные для перемешивания
     combined = list(zip(x, y))
     random.shuffle(combined)
     x_shuffled, y_shuffled = zip(*combined)
@@ -56,16 +53,13 @@ def fit(x_train, y_train, x_test, k=3):
     
     return y_predict
 
-#Расчет accuracy
 def compute_accuracy(y_test, y_predict):
     correct = sum(1 for true, pred in zip(y_test, y_predict) if true == pred)
     return correct / len(y_test)
 
-#результаты
 def visualize(x_train, y_train, x_test, y_test, y_predict):
     plt.figure(figsize=(10, 8))
     
-    # Обучающие точки
     x_train_class0 = [point[0] for point, label in zip(x_train, y_train) if label == 0]
     y_train_class0 = [point[1] for point, label in zip(x_train, y_train) if label == 0]
     x_train_class1 = [point[0] for point, label in zip(x_train, y_train) if label == 1]
@@ -74,7 +68,7 @@ def visualize(x_train, y_train, x_test, y_test, y_predict):
     plt.scatter(x_train_class0, y_train_class0, c='blue', marker='o', label='Train Class 0')
     plt.scatter(x_train_class1, y_train_class1, c='blue', marker='x', label='Train Class 1')
     
-    # Тестовые точки - правильно классифицированные
+
     x_test_correct0 = [point[0] for point, true, pred in zip(x_test, y_test, y_predict) if true == 0 and true == pred]
     y_test_correct0 = [point[1] for point, true, pred in zip(x_test, y_test, y_predict) if true == 0 and true == pred]
     x_test_correct1 = [point[0] for point, true, pred in zip(x_test, y_test, y_predict) if true == 1 and true == pred]
@@ -82,8 +76,7 @@ def visualize(x_train, y_train, x_test, y_test, y_predict):
     
     plt.scatter(x_test_correct0, y_test_correct0, c='green', marker='o', label='Test Correct Class 0')
     plt.scatter(x_test_correct1, y_test_correct1, c='green', marker='x', label='Test Correct Class 1')
-    
-    # Тестовые точки - неправильно классифицированные
+
     x_test_wrong0 = [point[0] for point, true, pred in zip(x_test, y_test, y_predict) if true == 0 and true != pred]
     y_test_wrong0 = [point[1] for point, true, pred in zip(x_test, y_test, y_predict) if true == 0 and true != pred]
     x_test_wrong1 = [point[0] for point, true, pred in zip(x_test, y_test, y_predict) if true == 1 and true != pred]
@@ -99,7 +92,6 @@ def visualize(x_train, y_train, x_test, y_test, y_predict):
     plt.grid(True)
     plt.show()
 
-# Основная программа
 def main():
     x, y = generate_data()
     x_train, x_test, y_train, y_test = train_test_split(x, y)
