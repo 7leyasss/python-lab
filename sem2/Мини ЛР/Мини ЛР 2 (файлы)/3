@@ -1,0 +1,38 @@
+"""
+Задание №3: 
+Все элементы одномерного массива, расположенные перед минимальным, увеличить в 2 раза.
+Исходные данные читаются из файла, результат записывается в новый файл.
+"""
+
+def process_array(arr):
+    min_index = arr.index(min(arr))
+    for i in range(min_index):
+        arr[i] *= 2
+    return arr
+
+def read_file(filename):
+    with open(filename, 'r') as file:
+        data = file.read().strip()
+        numbers = list(map(float, data.replace(',', ' ').replace(';', ' ').split()))
+    return numbers
+
+def write_file(filename, arr):
+    with open(filename, 'w') as file:
+        file.write(' '.join(map(str, arr)))
+
+try:
+    input_arr = read_file('input.txt')
+    print(f"Исходный массив: {input_arr}")
+
+    processed_arr = process_array(input_arr.copy())
+    print(f"Обработанный массив: {processed_arr}")
+
+    write_file('output.txt', processed_arr)
+    print("Результат сохранён в output.txt")
+
+except FileNotFoundError:
+    print("Ошибка: файл 'input.txt' не найден!")
+except ValueError:
+    print("Ошибка: файл содержит некорректные данные!")
+except Exception as e:
+    print(f"Произошла ошибка: {e}")
