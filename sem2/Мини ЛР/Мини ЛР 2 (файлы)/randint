@@ -1,0 +1,8 @@
+import random
+
+random.seed(224) 
+max_task_number = 20  
+task_number = random.randint(1, max_task_number)
+print(f"Ваше задание: №{task_number}")
+
+#Ваше задание: №3
