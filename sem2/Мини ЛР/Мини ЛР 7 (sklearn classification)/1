@@ -12,11 +12,9 @@ def generate_datasets():
     n_samples = 500
 
     noisy_circles = datasets.make_circles(n_samples=n_samples, factor=0.5, noise=0.05, random_state=seed)
-    
     noisy_moons = datasets.make_moons(n_samples=n_samples, noise=0.05, random_state=seed)
-    
     varied = datasets.make_blobs(n_samples=n_samples, cluster_std=[1.0, 0.5], random_state=seed, centers=2)
-  
+    
     x, y = datasets.make_blobs(n_samples=n_samples, random_state=170, centers=2)
     transformation = [[0.6, -0.6], [-0.4, 0.8]]
     x_aniso = np.dot(x, transformation)
@@ -30,46 +28,51 @@ def create_models():
     models = [
         ('KNN', KNeighborsClassifier(n_neighbors=3)),
         ('Logistic Regression', LogisticRegression(max_iter=200)),
-        ('SVM', SVC(kernel='rbf', C=1.0))]
+        ('SVM', SVC(kernel='rbf', C=1.0))
+    ]
     return models
 
 def train_and_visualize():
-    datasets = generate_datasets()
+    datasets_list = generate_datasets()
     models = create_models()
     
-    plt.figure(figsize=(15, 20))
+    plt.figure(figsize=(18, 25))
     
-    for i, (X, y) in enumerate(datasets):
-
+    for i, (X, y) in enumerate(datasets_list):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-      
-        x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-        y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+        
+        x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
+        y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
         xx, yy = np.meshgrid(np.linspace(x_min, x_max, 100),
-                             np.linspace(y_min, y_max, 100))
+                           np.linspace(y_min, y_max, 100))
         
         for j, (name, model) in enumerate(models):
             model.fit(X_train, y_train)
             y_pred = model.predict(X_test)
             accuracy = accuracy_score(y_test, y_pred)
-\
+            
             Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
             Z = Z.reshape(xx.shape)
- 
+            
             plt.subplot(5, 3, i*3 + j + 1)
-            plt.contourf(xx, yy, Z, alpha=0.3, cmap='bwr')
-
-            plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap='bwr', edgecolors='k', label='Train')
+            plt.contourf(xx, yy, Z, alpha=0.3, cmap='coolwarm')
             
-            for k in range(len(X_test)):
-                color = 'green' if y_pred[k] == y_test[k] else 'red'
-                plt.scatter(X_test[k, 0], X_test[k, 1], c=color, edgecolors='k', marker='x', s=100)
+            plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap='coolwarm', edgecolors='k', s=30)
             
-            plt.title(f"{name}\nData {i+1}, Acc: {accuracy:.2f}")
+            correct = y_pred == y_test
+            plt.scatter(X_test[correct, 0], X_test[correct, 1], 
+                        c=y_test[correct], cmap='coolwarm', marker='x', s=100, linewidth=2, 
+                        edgecolors='green', label='Correct')
+            plt.scatter(X_test[~correct, 0], X_test[~correct, 1], 
+                        c=y_test[~correct], cmap='coolwarm', marker='x', s=100, linewidth=2,
+                        edgecolors='red', label='Incorrect')
+            
+            plt.title(f"{name}\nDataset {i+1}, Accuracy: {accuracy:.2f}")
             plt.xlim(xx.min(), xx.max())
             plt.ylim(yy.min(), yy.max())
     
     plt.tight_layout()
     plt.show()
 
-train_and_visualize()
+if __name__ == "__main__":
+    train_and_visualize()
