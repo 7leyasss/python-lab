@@ -3,14 +3,12 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import (KMeans, DBSCAN, AgglomerativeClustering, 
                            MeanShift, SpectralClustering, AffinityPropagation,
                            Birch, OPTICS, MiniBatchKMeans)
-from sklearn.datasets import (make_blobs, make_moons, make_circles,
-                            make_classification, make_swiss_roll)
+from sklearn.datasets import make_blobs, make_moons, make_circles, make_classification
 from sklearn.preprocessing import StandardScaler
 import random
 
-random.seed(24) 
-algorithms = random.sample(range(1, 12), 3)
-print(f"Выбранные номера алгоритмов: {algorithms}")
+random_numbers = random.sample(range(1, 12), 3)
+print("Выбранные номера методов:", random_numbers)
 
 algorithm_map = {
     1: ('KMeans', KMeans),
@@ -22,116 +20,195 @@ algorithm_map = {
     7: ('Birch', Birch),
     8: ('OPTICS', OPTICS),
     9: ('MiniBatchKMeans', MiniBatchKMeans),
-    10: ('BisectingKMeans', None), 
-    11: ('GaussianMixture', None)   
+    10: ('BisectingKMeans', None),  # Не реализовано в sklearn
+    11: ('GaussianMixture', None)   # Не реализовано в sklearn.cluster
 }
 
 selected_algorithms = []
-for alg_num in algorithms:
-    name, cls = algorithm_map[alg_num]
+for num in random_numbers:
+    name, cls = algorithm_map[num]
     if cls is not None:
         selected_algorithms.append((name, cls))
     else:
-        print(f"Алгоритм {name} не доступен в sklearn для кластеризации")
+        print(f"Алгоритм {name} не доступен в sklearn.cluster")
 
 print("Выбранные алгоритмы для реализации:")
 for name, _ in selected_algorithms:
     print(f"- {name}")
 
-# 2. Генерация 6 типов данных для кластеризации
-def generate_datasets():
-    n_samples = 500
-    random_state = 24
-    
-    X1, y1 = make_blobs(n_samples=n_samples, centers=3, 
-                       cluster_std=[1.0, 2.5, 0.5],
-                       random_state=random_state)
-    
-    X2, y2 = make_moons(n_samples=n_samples, noise=0.05, 
-                       random_state=random_state)
-    
-    X3, y3 = make_circles(n_samples=n_samples, noise=0.05, 
-                         factor=0.5, random_state=random_state)
-    
-    X4, y4 = make_blobs(n_samples=n_samples, centers=3, 
-                       random_state=random_state)
+
+def generate_data_1(n_samples=300):
+    """Кластеры с разной плотностью"""
+    centers = [[1, 1], [-1, -1], [1, -1]]
+    X, _ = make_blobs(n_samples=n_samples, centers=centers, cluster_std=[0.4, 0.5, 0.2])
+    return X
+
+def generate_data_2(n_samples=300):
+    """Два полумесяца"""
+    X, _ = make_moons(n_samples=n_samples, noise=0.05)
+    return X
+
+def generate_data_3(n_samples=300):
+    """Концентрические окружности"""
+    X, _ = make_circles(n_samples=n_samples, noise=0.05, factor=0.5)
+    return X
+
+def generate_data_4(n_samples=300):
+    """Анизотропно распределенные данные"""
+    X, _ = make_blobs(n_samples=n_samples, random_state=170)
     transformation = [[0.6, -0.6], [-0.4, 0.8]]
-    X4 = np.dot(X4, transformation)
-    
-    X5, y5 = make_blobs(n_samples=n_samples, centers=3, 
-                       cluster_std=[1.0, 2.0, 0.5],
-                       random_state=random_state)
-    
-    X6, y6 = make_swiss_roll(n_samples=n_samples, noise=0.05, 
-                            random_state=random_state)
-    X6 = X6[:, [0, 2]] 
-    
-    datasets = [
-        ("Кластеры разной дисперсии", X1),
-        ("Полумесяцы", X2),
-        ("Окружности", X3),
-        ("Анизотропные", X4),
-        ("Разномасштабные", X5),
-        ("Швейцарский рулон", X6)
-    ]
-    
-    return datasets
+    X = np.dot(X, transformation)
+    return X
 
-def apply_kmeans(X, n_clusters=3):
-    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
-    return kmeans.fit_predict(X)
+def generate_data_5(n_samples=300):
+    """Кластеры с переменной дисперсией"""
+    X, _ = make_blobs(n_samples=n_samples, cluster_std=[1.0, 2.5, 0.5])
+    return X
 
-def apply_dbscan(X, eps=0.3, min_samples=10):
-    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
-    return dbscan.fit_predict(X)
+def generate_data_6(n_samples=300):
+    """Случайные данные без четкой структуры"""
+    X, _ = make_classification(n_samples=n_samples, n_features=2, n_informative=2,
+                             n_redundant=0, n_clusters_per_class=1, random_state=4)
+    return X
 
-def apply_agglomerative(X, n_clusters=3):
-    agg = AgglomerativeClustering(n_clusters=n_clusters)
-    return agg.fit_predict(X)
+def cluster_kmeans(X):
+    """Кластеризация с помощью KMeans"""
+    X = StandardScaler().fit_transform(X)
+    kmeans = KMeans(n_clusters=3, random_state=42).fit(X)
+    return kmeans.labels_
 
-def plot_clusters(X, y_pred, title, algorithm_name):
-    plt.figure(figsize=(8, 6))
-    plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap='viridis', s=50, alpha=0.7)
-    plt.title(f"{algorithm_name} - {title}")
-    plt.xlabel("Признак 1")
-    plt.ylabel("Признак 2")
-    plt.grid(True)
-    plt.show()
+def cluster_dbscan(X):
+    """Кластеризация с помощью DBSCAN"""
+    X = StandardScaler().fit_transform(X)
+    db = DBSCAN(eps=0.3, min_samples=10).fit(X)
+    return db.labels_
 
-def main():
-    datasets = generate_datasets()
-    results_table = []
+def cluster_meanshift(X):
+    """Кластеризация с помощью MeanShift"""
+    X = StandardScaler().fit_transform(X)
+    ms = MeanShift(bandwidth=0.5).fit(X)
+    return ms.labels_
 
-    for data_name, X in datasets:
-        X = StandardScaler().fit_transform(X)
+def cluster_agglomerative(X):
+    """Кластеризация с помощью AgglomerativeClustering"""
+    X = StandardScaler().fit_transform(X)
+    ac = AgglomerativeClustering(n_clusters=3).fit(X)
+    return ac.labels_
+
+def cluster_spectral(X):
+    """Кластеризация с помощью SpectralClustering"""
+    X = StandardScaler().fit_transform(X)
+    sc = SpectralClustering(n_clusters=3, affinity='nearest_neighbors').fit(X)
+    return sc.labels_
+
+def cluster_affinity(X):
+    """Кластеризация с помощью AffinityPropagation"""
+    X = StandardScaler().fit_transform(X)
+    af = AffinityPropagation().fit(X)
+    return af.labels_
+
+def cluster_birch(X):
+    """Кластеризация с помощью Birch"""
+    X = StandardScaler().fit_transform(X)
+    birch = Birch(n_clusters=3).fit(X)
+    return birch.labels_
+
+def cluster_optics(X):
+    """Кластеризация с помощью OPTICS"""
+    X = StandardScaler().fit_transform(X)
+    optics = OPTICS(min_samples=10).fit(X)
+    return optics.labels_
+
+def cluster_minibatchkmeans(X):
+    """Кластеризация с помощью MiniBatchKMeans"""
+    X = StandardScaler().fit_transform(X)
+    mbk = MiniBatchKMeans(n_clusters=3, random_state=42).fit(X)
+    return mbk.labels_
+
+cluster_functions = {
+    'KMeans': cluster_kmeans,
+    'DBSCAN': cluster_dbscan,
+    'MeanShift': cluster_meanshift,
+    'Agglomerative': cluster_agglomerative,
+    'Spectral': cluster_spectral,
+    'AffinityPropagation': cluster_affinity,
+    'Birch': cluster_birch,
+    'OPTICS': cluster_optics,
+    'MiniBatchKMeans': cluster_minibatchkmeans
+}
+
+data_generators = [
+    ("Кластеры разной плотности", generate_data_1),
+    ("Два полумесяца", generate_data_2),
+    ("Концентрические окружности", generate_data_3),
+    ("Анизотропные данные", generate_data_4),
+    ("Кластеры с разной дисперсией", generate_data_5),
+    ("Случайные данные", generate_data_6)
+]
+
+selected_methods = []
+for name, _ in selected_algorithms:
+    if name in cluster_functions:
+        selected_methods.append((name, cluster_functions[name]))
+
+plt.figure(figsize=(15, 20))
+plot_num = 1
+
+for i, (data_name, generate_data) in enumerate(data_generators):
+    X = generate_data()
+    X = StandardScaler().fit_transform(X)
+
+    for j, (method_name, cluster_func) in enumerate(selected_methods):
+        plt.subplot(len(data_generators), len(selected_methods), plot_num)
+
+        labels = cluster_func(X)
         
-        row_results = [data_name]
-        
-        for alg_name, alg_class in selected_algorithms:
-            if alg_name == 'KMeans':
-                y_pred = apply_kmeans(X)
-            elif alg_name == 'DBSCAN':
-                y_pred = apply_dbscan(X)
-            elif alg_name == 'Agglomerative':
-                y_pred = apply_agglomerative(X)
-            else:
-                y_pred = np.zeros(X.shape[0])  # Заглушка
-            
-            plot_clusters(X, y_pred, data_name, alg_name)
-            
-            n_clusters = len(np.unique(y_pred))
-            row_results.append(f"{alg_name} ({n_clusters} кластеров)")
-        
-        results_table.append(row_results)
-    
-    print("\nИтоговая таблица результатов (6x3):")
-    print("="*80)
-    print("{:<25} | {:<25} | {:<25}".format(
-        "Тип данных", "Алгоритм 1", "Алгоритм 2"))
-    print("-"*80)
-    for row in results_table:
-        print("{:<25} | {:<25} | {:<25}".format(*row))
-    print("="*80)
+        plt.scatter(X[:, 0], X[:, 1], c=labels, s=10, cmap='viridis')
+        plt.title(f"{data_name}\n{method_name}")
+        plt.xticks([])
+        plt.yticks([])
 
-if __name__ == "__main__":
-    main()
+        plot_num += 1
+
+plt.tight_layout()
+plt.show()
+
+print("\nАнализ результатов:")
+for method_name, _ in selected_methods:
+    print(f"\n{method_name}:")
+    if method_name == 'DBSCAN':
+        print("   - Хорошо работает с кластерами произвольной формы (полумесяцы, окружности)")
+        print("   - Плохо работает с анизотропными данными и кластерами разной плотности")
+        print("   - Автоматически определяет количество кластеров")
+    elif method_name == 'MeanShift':
+        print("   - Хорошо работает с кластерами одинаковой плотности")
+        print("   - Плохо работает с кластерами разной плотности и сложной формы")
+        print("   - Автоматически определяет количество кластеров")
+    elif method_name == 'Agglomerative':
+        print("   - Хорошо работает с компактными кластерами")
+        print("   - Плохо работает с кластерами сложной формы (полумесяцы, окружности)")
+        print("   - Требует указания количества кластеров")
+    elif method_name == 'KMeans':
+        print("   - Хорошо работает с компактными, изотропными кластерами")
+        print("   - Плохо работает с кластерами сложной формы и разной плотности")
+        print("   - Требует указания количества кластеров")
+    elif method_name == 'Spectral':
+        print("   - Хорошо работает с кластерами сложной формы")
+        print("   - Чувствителен к выбору параметров")
+        print("   - Требует указания количества кластеров")
+    elif method_name == 'AffinityPropagation':
+        print("   - Автоматически определяет количество кластеров")
+        print("   - Вычислительно сложный для больших наборов данных")
+        print("   - Чувствителен к параметру демпфирования")
+    elif method_name == 'Birch':
+        print("   - Эффективен для больших наборов данных")
+        print("   - Хорошо работает с компактными кластерами")
+        print("   - Менее точен, чем KMeans")
+    elif method_name == 'OPTICS':
+        print("   - Улучшенная версия DBSCAN для данных с разной плотностью")
+        print("   - Автоматически определяет количество кластеров")
+        print("   - Вычислительно сложный для больших наборов данных")
+    elif method_name == 'MiniBatchKMeans':
+        print("   - Быстрая версия KMeans для больших наборов данных")
+        print("   - Хорошо работает с компактными кластерами")
+        print("   - Требует указания количества кластеров")
