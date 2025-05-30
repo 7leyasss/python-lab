@@ -1,0 +1,21 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+a = float(input("Введите коэффициент a: "))
+b = float(input("Введите коэффициент b: "))
+c = float(input("Введите коэффициент c: "))
+x_min = float(input("Введите минимальное значение x: "))
+x_max = float(input("Введите максимальное значение x: "))
+
+x = np.linspace(x_min, x_max, 400)
+
+y = a * np.cos(x) + b * np.sin(c * x)
+
+plt.figure(figsize=(10, 5))
+plt.plot(x, y, 'b-', label=f'f(x) = {a}·cos x + {b}·sin({c}·x)')
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.title('График функции')
+plt.legend()
+plt.grid()
+plt.show()
